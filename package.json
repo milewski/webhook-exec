@@ -1,0 +1,29 @@
+{
+  "name": "webhook-exec",
+  "version": "1.0.0",
+  "description": "",
+  "main": "source/Main.js",
+  "scripts": {
+    "listen": "node source/Main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milewski/webhook-exec.git"
+  },
+  "author": "Rafael Milewski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/milewski/webhook-exec/issues"
+  },
+  "homepage": "https://github.com/milewski/webhook-exec#readme",
+  "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.13",
+    "expect.js": "^0.3.1",
+    "mocha": "^3.3.0",
+    "typescript": "^2.2.2"
+  },
+  "dependencies": {
+    "body": "^5.1.0"
+  }
+}
