@@ -1,95 +1,40 @@
-import { createServer, Server } from 'http';
-import { exec, spawnSync } from 'child_process';
-import * as path from 'path';
-import { createHmac } from 'crypto';
+#!/usr/bin/env node
 
-class WebHook {
+import { spawn } from "child_process";
+import * as kill from "fkill";
+import * as fs from "fs-extra";
 
-    private server: Server
+const file = require.resolve('./WebHook.js')
 
-    constructor() {
+new Promise(resolve => {
 
-        this.server = createServer((request, response) => {
+    const process = spawn(`node ${file}`, [], { stdio: 'inherit', shell: true })
+    let pid;
 
-            const chunks = [];
-
-            request.on('data', chunk => chunks.push(chunk));
-            request.on('end', () => {
-
-                const { signature, event } = this.parseHeaders(request.headers)
-
-                if (this.validate(Buffer.concat(chunks), signature, '123456')) {
-
-                    this.run(event).then(() => console.log('completed'))
-
-                    response.writeHead(200, 'OK', { 'Content-Type': 'application/json' })
-                    response.end(JSON.stringify({ okay: true }))
-
-                }
-
-            })
-
-        })
-
-        this.server.listen(7070, '192.168.1.227');
-
+    try {
+        pid = fs.readFileSync('process.pid');
+    } catch (e) {
+        // do nothing
     }
 
-    private getPackageJson(): Promise<string> {
-        return new Promise(resolve => {
-            exec('npm prefix').stdout.on('data', (root: Buffer) => {
-                resolve(require(path.resolve(root.toString('utf8').trim(), 'package.json')))
-            });
-        })
+    return resolve({ process, pid })
+
+}).then(({ process, pid }) => {
+
+    if (pid) {
+        return kill(pid.toString()).then(() => process)
     }
 
-    private run(action: string) {
+    return process
 
-        return this
-            .getPackageJson()
-            .then(config => {
+}).then(process => {
 
-                let commands = config['webhooks'][action]
+    let pidFile = fs.createWriteStream('process.pid');
+    pidFile.write(process.pid.toString());
+    pidFile.end();
 
-                if (typeof commands === 'string') {
-                    commands = [commands]
-                }
+    process.unref();
 
-                return commands
+})
 
-            }).then(commands => {
 
-                /**
-                 * Execute the scripts
-                 */
-                commands.forEach(command => spawnSync(command, [], { stdio: 'inherit', shell: true }))
-
-            })
-
-    }
-
-    private parseHeaders(headers: { [key: string]: string }) {
-
-        const result = { signature: null, event: null }
-
-        for (let header in headers) {
-
-            const matches = header.match(/signature|event/);
-
-            if (matches) {
-                result[matches.shift()] = headers[header]
-            }
-
-        }
-
-        return result;
-
-    }
-
-    private validate(data: Buffer, hash: string, key: string): Boolean {
-        return createHmac('sha256', key).update(data, 'utf8').digest('hex') === hash;
-    }
-
-}
-
-new WebHook()

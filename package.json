@@ -2,9 +2,12 @@
   "name": "webhook-exec",
   "version": "1.0.0",
   "description": "",
-  "main": "source/Main.js",
+  "main": "source/index.js",
   "scripts": {
     "listen": "node source/Main.js"
+  },
+  "webhooks": {
+    "push": "echo test"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,7 @@
     "typescript": "^2.2.2"
   },
   "dependencies": {
-    "body": "^5.1.0"
+    "body": "^5.1.0",
+    "fkill": "^4.1.0"
   }
 }
