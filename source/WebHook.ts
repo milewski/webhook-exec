@@ -1,15 +1,23 @@
 #!/usr/bin/env node
 
-import { createServer, Server } from 'http';
-import { exec, spawnSync } from 'child_process';
-import * as path from 'path';
-import { createHmac } from 'crypto';
+import { createServer, Server } from "http";
+import { exec, spawnSync } from "child_process";
+import * as path from "path";
+import { createHmac } from "crypto";
+import * as yargs from "yargs-parser";
 
 export class WebHook {
 
     private server: Server
+    private options = {
+        port: 7070,
+        host: 'localhost',
+        secret: null
+    }
 
-    constructor() {
+    constructor(options = {}) {
+
+        this.options = Object.assign(this.options, options, yargs(process.argv.slice(2)))
 
         this.server = createServer((request, response) => {
 
@@ -20,7 +28,7 @@ export class WebHook {
 
                 const { signature, event } = this.parseHeaders(request.headers)
 
-                if (this.validate(Buffer.concat(chunks), signature, '123456')) {
+                if (this.validate(Buffer.concat(chunks), signature, this.options.secret.toString())) {
 
                     this.run(event).then(() => console.log('completed'))
 
@@ -33,7 +41,7 @@ export class WebHook {
 
         })
 
-        // this.server.listen(7070, '192.168.1.227');
+        this.server.listen(this.options.port, this.options.host);
 
     }
 

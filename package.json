@@ -1,19 +1,33 @@
 {
   "name": "webhook-exec",
-  "version": "1.0.0",
-  "description": "",
-  "main": "source/index.js",
+  "version": "0.0.1",
+  "description": "WebHook Server that execute commands directly from your packages.json",
+  "keywords": [
+    "github",
+    "gogs",
+    "webhook",
+    "git",
+    "auto-pull",
+    "hook"
+  ],
+  "main": "source/WebHook.js",
+  "bin": "source/Main.js",
   "scripts": {
-    "listen": "node source/Main.js"
-  },
-  "webhooks": {
-    "push": "echo test"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/milewski/webhook-exec.git"
   },
-  "author": "Rafael Milewski",
+  "files": [
+    "source/*.js",
+    "test"
+  ],
+  "author": {
+    "name": "Rafael Milewski",
+    "email": "rafael.milewski@gmail.com",
+    "url": "https://github.com/milewski"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/milewski/webhook-exec/issues"
@@ -28,6 +42,7 @@
   },
   "dependencies": {
     "body": "^5.1.0",
-    "fkill": "^4.1.0"
+    "kill-port": "^1.0.0",
+    "yargs-parser": "^5.0.0"
   }
 }

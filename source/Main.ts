@@ -1,40 +1,16 @@
 #!/usr/bin/env node
 
 import { spawn } from "child_process";
-import * as kill from "fkill";
-import * as fs from "fs-extra";
+import * as kill from "kill-port";
+import * as yargs from "yargs-parser";
 
 const file = require.resolve('./WebHook.js')
+const args = process.argv.slice(2);
+const options = Object.assign({ port: 7070 }, yargs(args))
 
-new Promise(resolve => {
-
-    const process = spawn(`node ${file}`, [], { stdio: 'inherit', shell: true })
-    let pid;
-
-    try {
-        pid = fs.readFileSync('process.pid');
-    } catch (e) {
-        // do nothing
-    }
-
-    return resolve({ process, pid })
-
-}).then(({ process, pid }) => {
-
-    if (pid) {
-        return kill(pid.toString()).then(() => process)
-    }
-
-    return process
-
-}).then(process => {
-
-    let pidFile = fs.createWriteStream('process.pid');
-    pidFile.write(process.pid.toString());
-    pidFile.end();
-
-    process.unref();
-
-})
-
-
+if (options['_'].includes('stop')) {
+    kill(options.port)
+} else {
+    kill(options.port)
+        .then(() => spawn('node', [file, ...args], { stdio: 'ignore', detached: true }).unref());
+}

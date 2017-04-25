@@ -1,6 +1,8 @@
 {
   "scripts": {
+    "start": "webhook --port 1234 --secret 123456"
   },
-  "webhooks": {
+  "hooks": {
+    "push": ""
   }
 }
