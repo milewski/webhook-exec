@@ -1,4 +1,4 @@
-import { exec, spawn, spawnSync } from "child_process";
+import { exec, spawnSync } from "child_process";
 import * as path from "path";
 import * as expect from "expect.js";
 import { request } from "./request";
@@ -34,10 +34,9 @@ describe('Webhook', () => {
 
     it('should start a server normally', (done) => {
 
-        spawn('node', [main, '--server', 'gogs'], (error, stdout) => {
-            expect(stdout.toString()).to.match(/Your Webhook has been starter at: http:\/\/localhost:7070/)
-            done(error)
-        })
+        const hook = spawnSync('node', [main, '--server', 'gogs'])
+        expect(hook.stdout).to.match(/Your Webhook has been starter at: http:\/\/localhost:7070/)
+        done()
 
     })
 
