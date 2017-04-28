@@ -1,6 +1,6 @@
 {
   "name": "webhook-exec",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "WebHook Server that execute commands directly from your packages.json",
   "keywords": [
     "github",
@@ -8,12 +8,19 @@
     "webhook",
     "git",
     "auto-pull",
-    "hook"
+    "hook",
+    "gogs",
+    "bitbucket",
+    "github",
+    "gitlab"
   ],
   "main": "source/WebHook.js",
   "bin": "source/Main.js",
   "scripts": {
-    "build": "tsc"
+    "prepublish": "npm run build && npm test",
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "mocha --no-timeouts"
   },
   "repository": {
     "type": "git",
@@ -32,17 +39,22 @@
   "bugs": {
     "url": "https://github.com/milewski/webhook-exec/issues"
   },
-  "homepage": "https://github.com/milewski/webhook-exec#readme",
+  "homepage": "https://github.com/milewski/webhook-exec",
   "devDependencies": {
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.13",
     "expect.js": "^0.3.1",
     "mocha": "^3.3.0",
+    "request": "^2.81.0",
     "typescript": "^2.2.2"
   },
   "dependencies": {
-    "body": "^5.1.0",
     "kill-port": "^1.0.0",
     "yargs-parser": "^5.0.0"
+  },
+  "webhooks": {
+    "push": [
+      "echo {\\\"demo\\\":\\\"123\\\"} > push.json"
+    ]
   }
 }

@@ -3,8 +3,12 @@
 import { createServer, Server } from "http";
 import { exec, spawnSync } from "child_process";
 import * as path from "path";
-import { createHmac } from "crypto";
 import * as yargs from "yargs-parser";
+import { Github } from "./hosts/Github";
+import { Gogs } from "./hosts/Gogs";
+import { Host } from "./interfaces/Host";
+import { Bitbucket } from "./hosts/Bitbucket";
+import { Gitlab } from "./hosts/Gitlab";
 
 export class WebHook {
 
@@ -12,13 +16,27 @@ export class WebHook {
     private options = {
         port: 7070,
         host: 'localhost',
-        secret: null
+        secret: '',
+        server: 'github',
+    }
+
+    private host: Host;
+    private hosts = {
+        'github': Github,
+        'gogs': Gogs,
+        'bitbucket': Bitbucket,
+        'gitlab': Gitlab
     }
 
     constructor(options = {}) {
 
-        this.options = Object.assign(this.options, options, yargs(process.argv.slice(2)))
+        const { server, secret } = this.options = Object.assign(this.options, options, yargs(process.argv.slice(2)))
 
+        if (!(server in this.hosts)) {
+            throw new Error(`Unsupported server ${server}.`)
+        }
+
+        this.host = new this.hosts[server]
         this.server = createServer((request, response) => {
 
             const chunks = [];
@@ -28,13 +46,18 @@ export class WebHook {
 
                 const { signature, event } = this.parseHeaders(request.headers)
 
-                if (this.validate(Buffer.concat(chunks), signature, this.options.secret.toString())) {
+                if (this.host.validate(Buffer.concat(chunks), signature, secret.toString())) {
 
-                    this.run(event).then(() => console.log('completed'))
+                    this.run(event)
+                        .then(() => console.log('completed'))
+                        .then(() => {
+                            response.writeHead(200, 'OK', { 'Content-Type': 'application/json' })
+                            response.end(JSON.stringify({ okay: true }))
+                        })
 
-                    response.writeHead(200, 'OK', { 'Content-Type': 'application/json' })
-                    response.end(JSON.stringify({ okay: true }))
-
+                } else {
+                    response.writeHead(400, { 'Content-Type': 'application/json' })
+                    response.end(JSON.stringify({ error: 'Invalid signature.' }))
                 }
 
             })
@@ -45,7 +68,7 @@ export class WebHook {
 
     }
 
-    private getPackageJson(): Promise<string> {
+    private getPackageJson(): Promise<{ [key: string]: string }> {
         return new Promise(resolve => {
             exec('npm prefix').stdout.on('data', (root: Buffer) => {
                 resolve(require(path.resolve(root.toString('utf8').trim(), 'package.json')))
@@ -57,9 +80,17 @@ export class WebHook {
 
         return this
             .getPackageJson()
-            .then(config => {
+            .then(({ webhooks }) => {
 
-                let commands = config['webhooks'][action]
+                if (!webhooks) {
+                    return Promise.reject('No webhook config found in your package.json')
+                }
+
+                if (!webhooks[action]) {
+                    return Promise.reject(`There is no action defined for the ${action} event`)
+                }
+
+                let commands = webhooks[action]
 
                 if (typeof commands === 'string') {
                     commands = [commands]
@@ -79,25 +110,10 @@ export class WebHook {
     }
 
     private parseHeaders(headers: { [key: string]: string }) {
-
-        const result = { signature: null, event: null }
-
-        for (let header in headers) {
-
-            const matches = header.match(/signature|event/);
-
-            if (matches) {
-                result[matches.shift()] = headers[header]
-            }
-
+        return {
+            signature: headers[this.host.headers.signature],
+            event: headers[this.host.headers.event]
         }
-
-        return result;
-
-    }
-
-    private validate(data: Buffer, hash: string, key: string): Boolean {
-        return createHmac('sha256', key).update(data, 'utf8').digest('hex') === hash;
     }
 
 }
