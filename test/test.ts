@@ -35,7 +35,7 @@ describe('Webhook', () => {
     it('should start a server normally', (done) => {
 
         const hook = spawnSync('node', [main, '--server', 'gogs'])
-        expect(hook.stdout).to.match(/Your Webhook has been starter at: http:\/\/localhost:7070/)
+        expect(hook.stdout.toString()).to.match(/Your Webhook has been starter at: http:\/\/localhost:7070/)
         done()
 
     })
