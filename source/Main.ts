@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from "child_process";
-import * as kill from "kill-port";
+import { kill } from "cross-port-killer";
 import * as yargs from "yargs-parser";
 
 const file = require.resolve('./WebHook.js')

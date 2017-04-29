@@ -1,6 +1,6 @@
 {
   "name": "webhook-exec",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "WebHook Server that execute commands directly from your packages.json",
   "keywords": [
     "github",
@@ -49,7 +49,7 @@
     "typescript": "^2.2.2"
   },
   "dependencies": {
-    "kill-port": "^1.0.0",
+    "cross-port-killer": "^1.0.0",
     "yargs-parser": "^5.0.0"
   },
   "webhooks": {
