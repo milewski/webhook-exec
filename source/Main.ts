@@ -8,7 +8,7 @@ const file = require.resolve('./WebHook.js')
 const args = process.argv.slice(2);
 const options = Object.assign({ port: 7070, host: 'localhost' }, yargs(args))
 
-if (options['_'].includes('stop')) {
+if (options['_'].indexOf('stop') !== -1) {
     kill(options.port)
 } else {
     kill(options.port)
