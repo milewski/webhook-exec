@@ -27,6 +27,12 @@ A lightweight WebHook Server that execute commands defined directly on your pack
 
 You can find a list of events that you can react to here [https://developer.github.com/webhooks/#events](https://developer.github.com/webhooks/#events)
 
+## Install
+
+```bash
+$ npm install webhook-exec -D
+```
+
 ## Options
 
 | Options | type   | default   | description                                                   |
