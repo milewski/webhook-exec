@@ -1,6 +1,6 @@
 {
   "name": "webhook-exec",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "WebHook Server that execute commands directly from your packages.json",
   "keywords": [
     "github",
@@ -42,14 +42,14 @@
   "homepage": "https://github.com/milewski/webhook-exec",
   "devDependencies": {
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.13",
+    "@types/node": "^7.0.18",
     "expect.js": "^0.3.1",
     "mocha": "^3.3.0",
     "request": "^2.81.0",
-    "typescript": "^2.2.2"
+    "typescript": "^2.3.2"
   },
   "dependencies": {
-    "cross-port-killer": "^1.0.0",
+    "cross-port-killer": "^1.0.1",
     "yargs-parser": "^5.0.0"
   },
   "webhooks": {
