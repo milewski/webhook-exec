@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "cross-port-killer": "^1.0.0",
-    "yargs-parser": "^5.0.0"
+    "yargs-parser": "^7.0.0"
   },
   "webhooks": {
     "push": [
