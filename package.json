@@ -28,7 +28,7 @@
   },
   "files": [
     "source/**/*.js",
-    "test"
+    "test/**/*.js"
   ],
   "author": {
     "name": "Rafael Milewski",
