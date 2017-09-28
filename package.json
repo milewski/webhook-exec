@@ -1,6 +1,6 @@
 {
   "name": "webhook-exec",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "WebHook Server that execute commands directly from your packages.json",
   "keywords": [
     "github",

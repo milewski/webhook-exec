@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createServer, IncomingHttpHeaders, Server } from "http";
-import { exec, spawnSync } from "child_process";
+import { exec, execSync } from "child_process";
 import * as path from "path";
 import * as yargs from "yargs-parser";
 import { Github } from "./hosts/Github";
@@ -103,7 +103,7 @@ export class WebHook {
                 /**
                  * Execute the scripts
                  */
-                commands.forEach(command => spawnSync(command, [], { stdio: 'inherit', shell: true }))
+                commands.forEach(command => execSync(command))
 
             })
 
