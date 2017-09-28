@@ -6,10 +6,10 @@ const webhook = path.resolve(__dirname, '../source/Main.js');
 
 export const request = ({ signature, data = {} }): Promise<any> => {
 
-    let resolver, rejecter,
+    let resolver, rejector,
         promise = new Promise((resolve, reject) => {
             resolver = resolve
-            rejecter = reject
+            rejector = reject
         })
 
     let postData = { ...data },
@@ -24,12 +24,12 @@ export const request = ({ signature, data = {} }): Promise<any> => {
             }
         };
 
-    const hook = spawn('node', [webhook, '--server', 'gogs', '--secret', '123456'], { shell: true, cwd: __dirname })
+    const hook = spawn('node', [ webhook, '--server', 'gogs', '--secret', '123456' ], { shell: true, cwd: __dirname })
 
     hook.on('exit', function () {
         setTimeout(() => {
             http(requestOptions, (error, response, body) => {
-                if (error) rejecter(error);
+                if (error) rejector(error);
                 resolver(body);
             })
         }, 500)

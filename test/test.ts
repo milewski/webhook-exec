@@ -11,14 +11,14 @@ const webhook = path.resolve(__dirname, '../source/WebHook.js');
 describe('Webhook', () => {
 
     beforeEach(() => {
-        spawnSync('node', [main, 'stop']);
+        spawnSync('node', [ main, 'stop' ]);
     })
 
     after(() => {
-        spawnSync('node', [main, 'stop']);
+        spawnSync('node', [ main, 'stop' ]);
         try {
             unlinkSync('./test/push.json')
-        } catch (e) {
+        } catch {
             //do nothing
         }
     })
@@ -34,7 +34,7 @@ describe('Webhook', () => {
 
     it('should start a server normally', (done) => {
 
-        const hook = spawnSync('node', [main, '--server', 'gogs'])
+        const hook = spawnSync('node', [ main, '--server', 'gogs' ])
         expect(hook.stdout.toString()).to.match(/Your Webhook has been starter at: http:\/\/localhost:7070/)
         done()
 

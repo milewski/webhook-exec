@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { createServer, Server } from "http";
+import { createServer, IncomingHttpHeaders, Server } from "http";
 import { exec, spawnSync } from "child_process";
 import * as path from "path";
 import * as yargs from "yargs-parser";
@@ -36,7 +36,7 @@ export class WebHook {
             throw new Error(`Unsupported server ${server}.`)
         }
 
-        this.host = new this.hosts[server]
+        this.host = new this.hosts[ server ]
         this.server = createServer((request, response) => {
 
             const chunks = [];
@@ -86,19 +86,19 @@ export class WebHook {
                     return Promise.reject('No webhook config found in your package.json')
                 }
 
-                if (!webhooks[action]) {
+                if (!webhooks[ action ]) {
                     return Promise.reject(`There is no action defined for the ${action} event`)
                 }
 
-                let commands = webhooks[action]
+                let commands = webhooks[ action ]
 
                 if (typeof commands === 'string') {
-                    commands = [commands]
+                    commands = [ commands ]
                 }
 
                 return commands
 
-            }).then(commands => {
+            }).then((commands: string[]) => {
 
                 /**
                  * Execute the scripts
@@ -109,10 +109,10 @@ export class WebHook {
 
     }
 
-    private parseHeaders(headers: { [key: string]: string }) {
+    private parseHeaders(headers: IncomingHttpHeaders) {
         return {
-            signature: headers[this.host.headers.signature],
-            event: headers[this.host.headers.event]
+            signature: headers[ this.host.headers.signature ] as string,
+            event: headers[ this.host.headers.event ] as string
         }
     }
 

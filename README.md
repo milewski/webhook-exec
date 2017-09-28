@@ -11,8 +11,8 @@ A lightweight WebHook Server that execute commands defined directly on your pack
 ```json
 {
   "scripts": {
-    "start-webhook": "webhook --port 1234 --secret 123456 --server gogs",
-    "stop-webhook": "webhook stop"
+    "start-webhook": "webhook-exec --port 1234 --secret 123456 --server gogs",
+    "stop-webhook": "webhook-exec stop"
   },
   "webhooks": {
     "push": [
