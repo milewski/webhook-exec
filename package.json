@@ -54,7 +54,7 @@
   },
   "webhooks": {
     "push": [
-      "echo {\"demo\":\"123\"} > push.json"
+      "echo {\\\"demo\":\\\"123\\\"} > push.json"
     ]
   }
 }
