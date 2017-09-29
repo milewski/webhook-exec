@@ -3,7 +3,7 @@ import * as path from "path";
 import * as expect from "expect.js";
 import { request } from "./request";
 import { createHmac } from "crypto";
-import { unlinkSync } from "fs";
+import { readFileSync, unlinkSync } from "fs";
 
 const main = path.resolve(__dirname, '../source/Main.js');
 const webhook = path.resolve(__dirname, '../source/WebHook.js');
@@ -54,7 +54,10 @@ describe('Webhook', () => {
 
         return request({ signature, data })
             .then(data => expect(data).to.eql({ okay: true }))
-            .then(() => expect(require('./push.json')).to.eql({ demo: 123 }))
+            .then(() => {
+                const file = readFileSync(__dirname + '/push.json').toString().replace(/\\/g, '')
+                expect(JSON.parse(file)).to.eql({ demo: 123 })
+            })
 
     })
 
