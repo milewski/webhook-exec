@@ -1,10 +1,10 @@
-import { spawn } from "child_process";
-import * as path from "path";
-import * as http from "request";
+import { spawn } from 'child_process'
+import * as path from 'path'
+import * as http from 'request'
 
-const webhook = path.resolve(__dirname, '../source/Main.js');
+const webhook = path.resolve(__dirname, '../source/Main.js')
 
-export const request = ({ signature, data = {} }): Promise<any> => {
+export const request = ({ signature, data = {} }: { signature: any, data?: { [key: string]: any } }): Promise<any> => {
 
     let resolver, rejector,
         promise = new Promise((resolve, reject) => {
@@ -22,15 +22,15 @@ export const request = ({ signature, data = {} }): Promise<any> => {
                 'X-Gogs-Signature': signature,
                 'X-Gogs-Event': 'push'
             }
-        };
+        }
 
     const hook = spawn('node', [ webhook, '--server', 'gogs', '--secret', '123456' ], { shell: true, cwd: __dirname })
 
     hook.on('exit', function () {
         setTimeout(() => {
             http(requestOptions, (error, response, body) => {
-                if (error) rejector(error);
-                resolver(body);
+                if (error) rejector(error)
+                resolver(body)
             })
         }, 500)
     })
